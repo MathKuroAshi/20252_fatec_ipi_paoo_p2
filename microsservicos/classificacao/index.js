@@ -1,13 +1,12 @@
-//fazer os imports
-import express from 'express'
-import axios from 'axios'
+const axios = require('axios')
+const express = require('express')
 const app = express()
-//aplicar eventuais middlewares
 app.use(express.json())
+
 const palavraChave = 'importante'
+
 const funcoes = {
   ObservacaoCriada: (observacao) => {
-    //trocar o status da observação. se contiver a palavra importante, o status fica sendo importante, caso contrario, fica sendo comum
     if(observacao.texto.includes(palavraChave))
       observacao.status = 'importante'
     else
@@ -39,7 +38,6 @@ app.post('/eventos', (req, res) => {
   res.end()
 })
 
-//colocar o mss para funcionar na porta 7000
 const port = 7000
 app.listen(port, async () => {
   console.log(`Classificação. Porta ${port}.`)
