@@ -42,4 +42,14 @@ app.post('/eventos', (req, res) => {
 })
 
 const port = 4000
-app.listen(port, () => console.log(`Lembretes. Porta ${port}.`))
+app.listen(port, async () => {
+  console.log(`Lembretes. Porta ${port}.`)
+  
+  try {
+    await axios.post('http://localhost:10000/registrar', {
+      nome: 'lembretes',
+      tipos: ['LembreteClassificado']
+    })
+  }
+  catch (e){}
+})

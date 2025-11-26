@@ -47,6 +47,13 @@ app.post('/eventos', (req, res) => {
 })
 
 const port = 5000
-app.listen(port, () => console.log(`Observações. Porta ${port}.`))
+app.listen(port, async () => {
+  console.log(`Observações. Porta ${port}.`)
 
-
+  try {
+    await axios.post('http://localhost:10000/registrar', {
+      nome: 'observacoes',
+      tipos: ['ObservacaoClassificada']  
+    })
+  }catch (e){}
+})

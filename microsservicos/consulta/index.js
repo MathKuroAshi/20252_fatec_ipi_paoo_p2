@@ -3,7 +3,6 @@ const express = require('express')
 const app = express()
 app.use(express.json())
 
-
 const baseConsolidada = {}
 
 const funcoes = {
@@ -43,11 +42,31 @@ app.post('/eventos', (req, res) => {
 const port = 6000
 app.listen(port, async () => { 
   console.log (`Consulta. Porta ${port}.`)
-  const resp = await axios.get('http://localhost:10000/eventos')
-  for (let evento of resp.data){
-      try{
-        funcoes[evento.type](evento.payload)
-      }
-      catch(e){}
+  
+  try {
+    await axios.post('http://localhost:10000/registrar', {
+      nome: 'consulta',
+      tipos: ['LembreteCriado', 'LembreteAtualizado', 'ObservacaoCriada', 'ObservacaoAtualizada']
+    })
   }
+  catch (e){}
+  
+  try {
+    const resp = await axios.get('http://localhost:10000/eventos')
+    const tipoEvento = resp.data
+    for(let tipo in tipoEvento) {
+      const listaEventos = tipoEvento[tipo]
+      console.log(`${tipo}:`)
+      for(let evento of listaEventos){
+        try{
+          const { tipo: type, dados: payload } = evento
+          if(funcoes[type]){
+              funcoes[type](payload)
+          }
+        }
+        catch(e){}
+      }
+    }
+  }
+  catch(e){}
 })

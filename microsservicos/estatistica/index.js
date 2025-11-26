@@ -16,23 +16,21 @@ const lembretes = {}
 
 const funcoes = {
   LembreteCriado: (lembrete) => {
-
     lembretes[lembrete.id] = lembrete
     estatistica.totalLembretes++
   },
   LembreteAtualizado: (lembrete) => {
     if (lembrete.status === 'importante') {
       estatistica.totalLembretesImportantes++
-    } else {
+    }
+    else {
       estatistica.totalLembretesComuns++
     }
   },
-
   ObservacaoCriada: (obs) => {
     estatistica.totalObservacoes++
     estatistica.somaCaracteresObservacao += obs.texto.length
-    estatistica.mediaCaracteresObservacao =
-      estatistica.somaCaracteresObservacao / estatistica.totalObservacoes
+    estatistica.mediaCaracteresObservacao = estatistica.somaCaracteresObservacao / estatistica.totalObservacoes
   }
 }
 
@@ -40,7 +38,7 @@ app.post('/eventos', (req, res) => {
   const { type, payload } = req.body
   try {
     funcoes[type](payload)
-  } catch {}
+  } catch (e){}
   res.status(200).end()
 })
 
@@ -49,6 +47,14 @@ app.get('/estatistica', (req, res) => {
 })
 
 const port = 9000
-app.listen(port, () => {
+app.listen(port, async () => {
   console.log(`Estatística. Porta ${port}.`)
+
+  try {
+      await axios.post('http://localhost:10000/registrar', {
+        nome: 'estatistica',
+        tipos: ['LembreteCriado', 'LembreteAtualizado', 'ObservacaoCriada']
+      })
+    }
+    catch (e){}
 })

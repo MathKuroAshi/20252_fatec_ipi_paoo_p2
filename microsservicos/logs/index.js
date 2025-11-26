@@ -18,6 +18,14 @@ app.get('/logs', (req, res) => {
 })
 
 const port = 8000
-app.listen(port, () => {
+app.listen(port, async () => {
   console.log(`Logs. Porta ${port}.`)
+  
+  try {
+    await axios.post('http://localhost:10000/registrar', {
+      nome: 'logs',
+      tipos: ['*']
+    })
+  }
+  catch (e){}
 })
